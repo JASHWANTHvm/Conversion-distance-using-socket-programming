@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distance Conversion with Sockets</title>
+    <style>
+        /* General reset for margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Styling body for background gradient and font */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            color: #333;
+        }
+
+        /* Container styling for card layout */
+        .container {
+            background: #935454;
+            max-width: 400px;
+            width: 100%;
+            margin: 20px;
+            padding: 30px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Header styling */
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Input, select, and button styling */
+        input, select, button {
+            margin-top: 15px;
+            padding: 12px;
+            width: 100%;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        /* Button color gradient */
+        button {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background: linear-gradient(135deg, #5c0db4, #1d66e1);
+            transform: translateY(-2px);
+        }
+
+        /* Input and select focus styling */
+        input:focus, select:focus {
+            border: 1px solid #6a11cb;
+            outline: none;
+        }
+
+        /* Output text styling */
+        #output {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ebe9e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Distance Converter</h2>
+        <input type="number" id="distanceInput" placeholder="Enter distance">
+        <select id="fromUnit">
+            <option value="km">Kilometers</option>
+            <option value="miles">Miles</option>
+            <option value="meters">Meters</option>
+            <option value="yards">Yards</option>
+            <option value="feet">Feet</option>
+        </select>
+        <button onclick="convertDistanceTCP()">Convert using TCP</button>
+        <button onclick="convertDistanceUDP()">Convert using UDP</button>
+        <br><br>
+        <p>Output</p>
+        <p id="output"></p>
+    </div>
+    <script>
+        async function convertDistanceTCP() {
+            const distance = document.getElementById("distanceInput").value;
+            const fromUnit = document.getElementById("fromUnit").value;
+
+            const request = JSON.stringify({ distance: parseFloat(distance), unit: fromUnit });
+            const response = await fetch("http://localhost:4000", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: request
+            });
+            const result = await response.json();
+            displayResults(result);
+        }
+
+        async function convertDistanceUDP() {
+            const distance = document.getElementById("distanceInput").value;
+            const fromUnit = document.getElementById("fromUnit").value;
+
+            const request = JSON.stringify({ distance: parseFloat(distance), unit: fromUnit });
+            const response = await fetch("http://localhost:4000", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: request
+            });
+            const result = await response.json();
+            displayResults(result);
+        }
+
+        function displayResults(result) {
+            let output = "";
+            for (const [unit, value] of Object.entries(result)) {
+                output += `${value} ${unit}<br>`;
+            }
+            document.getElementById("output").innerHTML = output;
+        }
+    </script>
+</body>
+</html>
